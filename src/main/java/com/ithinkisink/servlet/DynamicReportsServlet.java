@@ -19,14 +19,17 @@ import com.ithinkisink.managedbean.DynamicReportsManagedBean;
 public class DynamicReportsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private DynamicReportsManagedBean dynamicReportsManagedBean;
+	//@Inject
+	private DynamicReportsManagedBean dynamicReportsManagedBean = new DynamicReportsManagedBean();
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		resp.setContentType("application/pdf");
 		OutputStream out = resp.getOutputStream();
+		if (dynamicReportsManagedBean == null) {
+			System.out.println("dynamicReportsManagedBean : "+dynamicReportsManagedBean);
+		}
 		out = dynamicReportsManagedBean.getOS(getServletContext(), out);
 		out.close();
 	}

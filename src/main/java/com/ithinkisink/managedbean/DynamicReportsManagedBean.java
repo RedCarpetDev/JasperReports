@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,38 +35,40 @@ public class DynamicReportsManagedBean implements Serializable {
 
 	private String invoiceName;
 	private JRBeanCollectionDataSource beanCollectionDataSource;
-	private Map<String, Object> parameters;
+	private Map<String, Object> parameters= new HashMap<String,Object>();
 
-	@PostConstruct
-	public void init() {
+	public DynamicReportsManagedBean() {
 		invoiceName="Invoice.jrxml";
-		
+
 		List<Item> itemList = new ArrayList<>(Arrays.asList(
 				new Item("01", "Item 01 description", 1.1, 1), 
 				new Item("02", "Item 02 description", 2.2, 2),
 				new Item("03", "Item 03 description", 3.3, 3)));
 		beanCollectionDataSource = new JRBeanCollectionDataSource(itemList);
-		
+
 		parameters = (new InvoiceDetails("INV#01", "Billing Company", "Billing Company Add", 
 				"Billing Company State 1", "Billing Company State 2", 
 				"Shipping Name", "Shipping Address", "Shipping State 1", "Shipping State 2", 1000)).toMap();
 	}
-	
+
+	@PostConstruct
+	public void init() {
+
+	}
+
 	/**
 	 * Preparing an output stream of the generated PDF invoice.
 	 * 
 	 * @return
 	 */
 	public OutputStream getOS(ServletContext context, OutputStream outputStream) {
-
-		parameters.put("IMAGE_PATH", context.getRealPath("/jasper/invoices"));
-
-		InputStream is = context.getResourceAsStream("/jasper/invoices/" + invoiceName);
-
+		//if (context != null) System.out.println("context : "+context.getRealPath("/jasper/invoices"));
+		parameters.put("IMAGE_PATH", context.getRealPath("/jasper/invoices/"));
+			InputStream is = context.getResourceAsStream("/jasper/invoices/" + invoiceName);
 		try {
 			report().setTemplateDesign(is)
-					.setDataSource(beanCollectionDataSource)
-					.setParameters(parameters).toPdf(outputStream);
+			.setDataSource(beanCollectionDataSource)
+			.setParameters(parameters).toPdf(outputStream);
 		} catch (DRException e) {
 			e.printStackTrace();
 		}
