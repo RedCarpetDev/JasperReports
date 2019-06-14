@@ -38,8 +38,8 @@ public class DynamicReportsManagedBean implements Serializable {
 	private Map<String, Object> parameters= new HashMap<String,Object>();
 
 	public DynamicReportsManagedBean() {
-		invoiceName="Invoice.jrxml";
-
+		//invoiceName="Invoice.jrxml";
+		invoiceName="ReparationOrder.jrxml";
 		List<Item> itemList = new ArrayList<>(Arrays.asList(
 				new Item("01", "Item 01 description", 1.1, 1), 
 				new Item("02", "Item 02 description", 2.2, 2),
